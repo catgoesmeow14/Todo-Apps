@@ -1,10 +1,10 @@
-document.addEventListener("DOMContentLoaded", function(){
-    const submitForm = document.getElementById("form");
+document.addEventListener("DOMContentLoaded", function () {
+  const submitForm = document.getElementById("form");
 
-    submitForm.addEventListener("submit", function(event){
-        event.preventDefault();
-        addTodo();
-    });
+  submitForm.addEventListener("submit", function (event) {
+    event.preventDefault();
+    addTodo();
+  });
 });
 
 /*
@@ -17,3 +17,20 @@ Lalu, variable submitForm kita berikan listener ketika tombol submit diklik. Ket
 Lalu, kode pemanggilan fungsi addTodo(); bertujuan untuk menjalankan kode yang akan menambahkan todo ke dalam todo list. Namun, saat ini kita tidak akan menambahkan todo ke dalam todo list, melainkan hanya menampilkannya pada console di browser. 
 */
 
+function makeTodo() {
+    const textTitle = document.createElement("h2");
+  textTitle.innerText = "Tugas Vote ENHYPEN";
+
+  const textTimeStamp = document.createElement("p");
+  textTimeStamp.innerText = "Created at " + "2021-05-25";
+
+  const textContainer = document.createElement("div");
+  textContainer.classList.add("inner");
+  textContainer.append(textTitle, textTimeStamp);
+
+  const container = document.createElement("div");
+  container.classList.add("item", "shadow");
+  container.append(textContainer);
+
+  return container;
+}
