@@ -18,11 +18,12 @@ Lalu, kode pemanggilan fungsi addTodo(); bertujuan untuk menjalankan kode yang a
 */
 
 function makeTodo() {
-    const textTitle = document.createElement("h2");
-  textTitle.innerText = "Tugas Vote ENHYPEN";
+
+  const textTitle = document.createElement("h2");
+  textTitle.innerText = todoObject.task;
 
   const textTimeStamp = document.createElement("p");
-  textTimeStamp.innerText = "Created at " + "2021-05-25";
+  textTimeStamp.innerText = todoObject.timestamp;
 
   const textContainer = document.createElement("div");
   textContainer.classList.add("inner");
@@ -34,3 +35,5 @@ function makeTodo() {
 
   return container;
 }
+
+
