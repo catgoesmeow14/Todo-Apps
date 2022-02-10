@@ -9,20 +9,21 @@ Kemudian RENDER_EVENT, variabel konstan ini bertujuan sebagai nama dari Custom E
 document.addEventListener(RENDER_EVENT, function () {
   const uncompletedTODOList = document.getElementById("todos");
   uncompletedTODOList.innerHTML = "";
- 
-  for(todoItem of todos){
-     const todoElement = makeTodo(todoItem);
-     uncompletedTODOList.append(todoElement);
-   }
+//memasang kondisi if statement untuk memfilter hanya todo “Yang harus dibaca” saja lah yang perlu ditampilkan.
+  for (todoItem of todos) {
+    const todoElement = makeTodo(todoItem);
+
+    if(todoItem.isCompleted == false)
+    uncompletedTODOList.append(todoElement);
+  }
 });
 
 document.addEventListener("DOMContentLoaded", function () {
- 
   const submitForm = document.getElementById("form");
 
   submitForm.addEventListener("submit", function (event) {
-      event.preventDefault();
-      addTodo();
+    event.preventDefault();
+    addTodo();
   });
 });
 
@@ -41,12 +42,16 @@ function addTodo() {
   const timestamp = document.getElementById("date").value;
 
   const generatedID = generateId();
-  const todoObject = generateTodoObject(generatedID, textTodo, timestamp, false);
+  const todoObject = generateTodoObject(
+    generatedID,
+    textTodo,
+    timestamp,
+    false
+  );
   todos.push(todoObject);
- 
+
   document.dispatchEvent(new Event(RENDER_EVENT));
 }
-
 
 /*
 Kode document.getElementById("title").value berfungsi untuk mengambil elemen pada html, dalam kasus ini kita mengambil element <input> dengan id title. Setelah element didapatkan, value di dalam form tersebut akan kita ambil dan dimasukkan ke dalam variabel textTodo. Logika yang sama juga terjadi pada variabel timestamp.
@@ -55,7 +60,7 @@ Setelah nilai dari variabel textTodo dan timestamp didapatkan, kita akan membuat
 
 Setelah disimpan pada array, kita panggil sebuah custom event RENDER_EVENT dengan dispatchEvent(), yang nantinya akan coba kita implementasi untuk me-render data yang telah disimpan pada array todos.
 
-*/ 
+*/
 
 function generateId() {
   return +new Date();
@@ -63,11 +68,11 @@ function generateId() {
 
 function generateTodoObject(id, task, timestamp, isCompleted) {
   return {
-      id,
-      task,
-      timestamp,
-      isCompleted
-  }
+    id,
+    task,
+    timestamp,
+    isCompleted,
+  };
 }
 
 /*
@@ -75,7 +80,6 @@ Fungsi generateTodoObject() ini berfungsi untuk membuat sebuah object di JavaScr
 */
 
 function makeTodo(todoObject) {
- 
   const textTitle = document.createElement("h2");
   textTitle.innerText = todoObject.task;
 
@@ -83,40 +87,86 @@ function makeTodo(todoObject) {
   textTimestamp.innerText = todoObject.timestamp;
 
   const textContainer = document.createElement("div");
-  textContainer.classList.add("inner")
+  textContainer.classList.add("inner");
   textContainer.append(textTitle, textTimestamp);
 
   const container = document.createElement("div");
-  container.classList.add("item", "shadow")
+  container.classList.add("item", "shadow");
   container.append(textContainer);
   container.setAttribute("id", `todo-${todoObject.id}`);
+
+  if (todoObject.isCompleted) {
+    const undoButton = document.createElement("button");
+    undoButton.classList.add("undo-button");
+    undoButton.addEventListener("click", function () {
+      undoTaskFromComplete(todoObject.id);
+    });
+
+    const trashButton = document.createElement("button");
+    trashButton.classList.add("trash-button");
+    trashButton.addEventListener("click", function () {
+      removeTaskFromComplete(todoObject.id);
+    });
+
+    container.append(undoButton, trashButton);
+  } else {
+    const checkButton = document.createElement("button");
+    checkButton.classList.add("check-button");
+    checkButton.addEventListener("click", function () {
+      addTaskToComplete(todoObject.id);
+    });
+
+    /* 
+    Untuk beberapa implementasi kode seperti createElement, classList.add(), dan append() sudah kita bahas sebelumnya. Intinya, beberapa kode tersebut membuat sebuah button dengan mengimplementasikan class check-button. Class tersebut adalah sebuah selector CSS yang terdapat beberapa konfigurasi style di dalamnya.
+
+    Kemudian, agar tombol tersebut bisa diinteraksikan, maka kita perlu menerapkan event listener “click”, dengan fungsi yang memanggil fungsi lain sesuai dengan konteks dari tombol tersebut. Misalnya, pada tombol ini (checkButton) memanggil addTaskToCompleted, yang mana akan memindahkan todo dari rak “Yang harus dibaca” ke rak “Selesai Dibaca”.
+
+    Tombol lain, seperti undoButton & trashButton, juga menerapkan hal yang sama, di mana memanggil fungsi undoTaskFromCompleted dan removeTaskFromCompleted. Yang mana masing - masing akan memindahkan todo dari selesai ke belum selesai, dan menghapus todo.
+    */
+
+    container.append(checkButton);
+  }
 
   return container;
 }
 
-
-// document.addEventListener(RENDER_EVENT, function() {
-//   const uncompletedTODOList = document.getElementById("todos");
-//   uncompletedTODOList.innerHTML = "";
-
-//   for(todoItem of todos){
-//     const todoElement = makeTodo(todoItem);
-//     uncompletedTODOList.append(todoElement);
-//   }
-// });
-
 /*
-Runtutan dari kode di atas adalah, pertama elemen container dari todo kita ambil terlebih
-dahulu dari DOM. Setelah itu, lakukan iterasi pada variabel todos untuk mengambil beberapa
-data todo yang telah tersimpan.
+  Runtutan dari kode di atas adalah, pertama elemen container dari todo kita ambil terlebih
+  dahulu dari DOM. Setelah itu, lakukan iterasi pada variabel todos untuk mengambil beberapa
+  data todo yang telah tersimpan.
 
-Namun, untuk memastikan agar container dari todo bersih sebelum diperbarui, maka kita perlu
-membersihkannya dengan memanggil property innerHTML = “”. Sehingga dengan mengatur property tersebut,
-tidak terjadi duplikasi data ketika menambahkan elemen DOM yang baru dengan append().
+  Namun, untuk memastikan agar container dari todo bersih sebelum diperbarui, maka kita perlu
+  membersihkannya dengan memanggil property innerHTML = “”. Sehingga dengan mengatur property tersebut,
+  tidak terjadi duplikasi data ketika menambahkan elemen DOM yang baru dengan append().
 
-Setiap iterasi yang dilakukan akan membuat satu elemen DOM, yakni sebagai hasil dari fungsi
-makeTodo() yang kemudian dimasukkan pada variabel DOM yang sudah ada pada tampilan
-web (uncompletedTODOList) melalui fungsi append(). Sehingga, elemen tersebut bisa langsung
-di-render oleh webpage.
-*/
+  Setiap iterasi yang dilakukan akan membuat satu elemen DOM, yakni sebagai hasil dari fungsi
+  makeTodo() yang kemudian dimasukkan pada variabel DOM yang sudah ada pada tampilan
+  web (uncompletedTODOList) melalui fungsi append(). Sehingga, elemen tersebut bisa langsung
+  di-render oleh webpage.
+  */
 
+
+  function addTaskToComplete (todoId) {
+    const todoTarget = findTodo(todoId);
+    if(todoTarget == null) return;
+
+    todoTarget.isCompleted = true;
+    document.dispatchEvent(new Event(RENDER_EVENT));
+  }
+
+  /*
+  Seperti yang sudah dijelaskan sebelumnya, fungsi ini digunakan untuk memindahkan todo dari rak “Yang harus dilakukan” ke “Yang sudah dilakukan”. Prinsipnya adalah merubah state isCompleted dari sebelumnya false ke true, kemudian panggil event RENDER_EVENT untuk memperbarui data yang ditampilkan.
+  */
+
+  function findTodo(todoId){
+    for(todoItem of todos){
+      if(todoItem.id === todoId){
+        return todoItem
+      }
+    }
+    return null
+  }
+
+  /*
+  Kemudian, fungsi ini memanggil fungsi baru, yaitu findTodo, yang mana berfungsi untuk mencari todo dengan ID yang sesuai pada array todos. Agar tidak terjadi error (undefined)
+  */ 
