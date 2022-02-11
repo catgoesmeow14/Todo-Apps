@@ -9,12 +9,21 @@ Kemudian RENDER_EVENT, variabel konstan ini bertujuan sebagai nama dari Custom E
 document.addEventListener(RENDER_EVENT, function () {
   const uncompletedTODOList = document.getElementById("todos");
   uncompletedTODOList.innerHTML = "";
-//memasang kondisi if statement untuk memfilter hanya todo “Yang harus dibaca” saja lah yang perlu ditampilkan.
+
+/*
+Agar tidak terjadi duplikasi oleh item yang ada di tampilan ketika memperbarui data todo yang ditampilkan, maka hapus terlebih dahulu elemen sebelumnya (yang sudah ditampilkan) dengan perintah innerHTML = “”.
+*/
+  const completedTODOList = document.getElementById("completed-todos");
+  completedTODOList.innerHTML = "";
+
+  //memasang kondisi if statement untuk memfilter hanya todo “Yang harus dibaca” saja lah yang perlu ditampilkan.
   for (todoItem of todos) {
     const todoElement = makeTodo(todoItem);
 
-    if(todoItem.isCompleted == false)
-    uncompletedTODOList.append(todoElement);
+    if (todoItem.isCompleted == false) 
+      uncompletedTODOList.append(todoElement);
+    else
+      completedTODOList.append(todoElement);
   }
 });
 
@@ -145,28 +154,62 @@ function makeTodo(todoObject) {
   di-render oleh webpage.
   */
 
+function addTaskToComplete(todoId) {
+  const todoTarget = findTodo(todoId);
+  if (todoTarget == null) return;
 
-  function addTaskToComplete (todoId) {
-    const todoTarget = findTodo(todoId);
-    if(todoTarget == null) return;
+  todoTarget.isCompleted = true;
+  document.dispatchEvent(new Event(RENDER_EVENT));
+}
 
-    todoTarget.isCompleted = true;
-    document.dispatchEvent(new Event(RENDER_EVENT));
-  }
-
-  /*
+/*
   Seperti yang sudah dijelaskan sebelumnya, fungsi ini digunakan untuk memindahkan todo dari rak “Yang harus dilakukan” ke “Yang sudah dilakukan”. Prinsipnya adalah merubah state isCompleted dari sebelumnya false ke true, kemudian panggil event RENDER_EVENT untuk memperbarui data yang ditampilkan.
   */
 
-  function findTodo(todoId){
-    for(todoItem of todos){
-      if(todoItem.id === todoId){
-        return todoItem
+function findTodo(todoId) {
+  for (todoItem of todos) {
+    if (todoItem.id === todoId) {
+      return todoItem;
+    }
+  }
+  return null;
+}
+
+/*
+  Kemudian, fungsi ini memanggil fungsi baru, yaitu findTodo, yang mana berfungsi untuk mencari todo dengan ID yang sesuai pada array todos. Agar tidak terjadi error (undefined)
+  */
+
+
+  //===================================================
+
+  function findTodoIndex(todoId) {
+    for(index in todos){
+      if(todos[index].id === todoId){
+        return index
       }
     }
-    return null
+    return -1
+  }
+
+  
+  /*
+   fungsi ini akan menghapus Todo berdasarkan index yang didapatkan dari pencarian Todo dengan menggunakan findTodoIndex(). Apabila pencarian berhasil, maka akan menghapus todo tersebut menggunakan fungsi slice() yang disediakan oleh JavaScript.
+  */
+  function removeTaskFromComplete(todoId) {
+    const todoTarget = findTodo(todoId);
+    if (todoTarget === -1) return;
+    todos.splice(todoTarget, 1);
+
+    document.dispatchEvent(new Event(RENDER_EVENT))
   }
 
   /*
-  Kemudian, fungsi ini memanggil fungsi baru, yaitu findTodo, yang mana berfungsi untuk mencari todo dengan ID yang sesuai pada array todos. Agar tidak terjadi error (undefined)
-  */ 
+  Fungsi ini sebenarnya mirip dengan addTaskToCompleted, namun perbedaannya adalah pada state isCompleted yang diubah nilainya ke false, hal ini bertujuan agar todo task yang sebelumnya completed (selesai), bisa dipindah menjadi incomplete (belum selesai).
+  */
+ function undoTaskFromComplete(todoId) {
+  const todoTarget = findTodo(todoId);
+  if (todoTarget == null) return;
+
+  todoTarget.isCompleted = false;
+  document.dispatchEvent(new Event(RENDER_EVENT));
+}
