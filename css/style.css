@@ -39,7 +39,7 @@ header {
     border-radius: 16px;
     margin-top: 16px;
     padding: 12px 24px 12px 24px;
-    background: white;
+    background: rgb(2, 5, 46);
     display: flex;
     align-items: center;
 }

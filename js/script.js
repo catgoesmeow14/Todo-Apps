@@ -10,9 +10,9 @@ document.addEventListener(RENDER_EVENT, function () {
   const uncompletedTODOList = document.getElementById("todos");
   uncompletedTODOList.innerHTML = "";
 
-/*
-Agar tidak terjadi duplikasi oleh item yang ada di tampilan ketika memperbarui data todo yang ditampilkan, maka hapus terlebih dahulu elemen sebelumnya (yang sudah ditampilkan) dengan perintah innerHTML = “”.
-*/
+  /*
+  Agar tidak terjadi duplikasi oleh item yang ada di tampilan ketika memperbarui data todo yang ditampilkan, maka hapus terlebih dahulu elemen sebelumnya (yang sudah ditampilkan) dengan perintah innerHTML = “”.
+  */
   const completedTODOList = document.getElementById("completed-todos");
   completedTODOList.innerHTML = "";
 
@@ -20,7 +20,7 @@ Agar tidak terjadi duplikasi oleh item yang ada di tampilan ketika memperbarui d
   for (todoItem of todos) {
     const todoElement = makeTodo(todoItem);
 
-    if (todoItem.isCompleted == false) 
+    if (todoItem.isCompleted == false)
       uncompletedTODOList.append(todoElement);
     else
       completedTODOList.append(todoElement);
@@ -34,6 +34,10 @@ document.addEventListener("DOMContentLoaded", function () {
     event.preventDefault();
     addTodo();
   });
+
+  if (isStorageExist()) {
+    loadDataFromStorage();
+  }
 });
 
 /*
@@ -60,6 +64,7 @@ function addTodo() {
   todos.push(todoObject);
 
   document.dispatchEvent(new Event(RENDER_EVENT));
+  saveData();
 }
 
 /*
@@ -160,6 +165,7 @@ function addTaskToComplete(todoId) {
 
   todoTarget.isCompleted = true;
   document.dispatchEvent(new Event(RENDER_EVENT));
+  saveData();
 }
 
 /*
@@ -180,36 +186,77 @@ function findTodo(todoId) {
   */
 
 
-  //===================================================
+//===================================================
 
-  function findTodoIndex(todoId) {
-    for(index in todos){
-      if(todos[index].id === todoId){
-        return index
-      }
+function findTodoIndex(todoId) {
+  for (index in todos) {
+    if (todos[index].id === todoId) {
+      return index
     }
-    return -1
   }
+  return -1
+}
 
-  
-  /*
-   fungsi ini akan menghapus Todo berdasarkan index yang didapatkan dari pencarian Todo dengan menggunakan findTodoIndex(). Apabila pencarian berhasil, maka akan menghapus todo tersebut menggunakan fungsi slice() yang disediakan oleh JavaScript.
-  */
-  function removeTaskFromComplete(todoId) {
-    const todoTarget = findTodo(todoId);
-    if (todoTarget === -1) return;
-    todos.splice(todoTarget, 1);
 
-    document.dispatchEvent(new Event(RENDER_EVENT))
-  }
+/*
+ fungsi ini akan menghapus Todo berdasarkan index yang didapatkan dari pencarian Todo dengan menggunakan findTodoIndex(). Apabila pencarian berhasil, maka akan menghapus todo tersebut menggunakan fungsi slice() yang disediakan oleh JavaScript.
+*/
+function removeTaskFromComplete(todoId) {
+  const todoTarget = findTodo(todoId);
+  if (todoTarget === -1) return;
+  todos.splice(todoTarget, 1);
 
-  /*
-  Fungsi ini sebenarnya mirip dengan addTaskToCompleted, namun perbedaannya adalah pada state isCompleted yang diubah nilainya ke false, hal ini bertujuan agar todo task yang sebelumnya completed (selesai), bisa dipindah menjadi incomplete (belum selesai).
-  */
- function undoTaskFromComplete(todoId) {
+  document.dispatchEvent(new Event(RENDER_EVENT));
+  saveData();
+}
+
+/*
+Fungsi ini sebenarnya mirip dengan addTaskToCompleted, namun perbedaannya adalah pada state isCompleted yang diubah nilainya ke false, hal ini bertujuan agar todo task yang sebelumnya completed (selesai), bisa dipindah menjadi incomplete (belum selesai).
+*/
+function undoTaskFromComplete(todoId) {
   const todoTarget = findTodo(todoId);
   if (todoTarget == null) return;
 
   todoTarget.isCompleted = false;
+  document.dispatchEvent(new Event(RENDER_EVENT));
+  saveData();
+}
+
+function saveData() {
+  if (isStorageExist()) {
+    const parsed = JSON.stringify(todos);
+    localStorage.setItem(STORAGE_KEY, parsed);
+    document.dispatchEvent(new Event(SAVED_EVENT));
+  }
+}
+
+const SAVED_EVENT = "saved-todo";
+const STORAGE_KEY = "TODO_APPS";
+
+function isStorageExist() /*boolean*/ {
+  if (typeof (Storage) === "undefined") {
+    alert("Sorry, your browser does not support Web Storage...");
+    return false
+  }
+  return true;
+}
+
+document.addEventListener(SAVED_EVENT, function () {
+  const bias = prompt("Siapa biasnya Vidya di ENHYPEN??", "Heeseung");
+  alert("Yupp benar jawabannya adalahh " + localStorage.getItem(STORAGE_KEY));
+  //console.log();
+});
+
+function loadDataFromStorage() {
+  const serializedData = localStorage.getItem(STORAGE_KEY);
+
+  let data = JSON.parse(serializedData);
+
+  if (data !== null) {
+    for (todo of data) {
+      todos.push(todo);
+    }
+  }
+
   document.dispatchEvent(new Event(RENDER_EVENT));
 }
