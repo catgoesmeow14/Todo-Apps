@@ -3,7 +3,9 @@ const RENDER_EVENT = "render-todo";
 
 /*
 Variabel todos adalah sebuah variabel yang menampung array dari beberapa object Todo. 
-Kemudian RENDER_EVENT, variabel konstan ini bertujuan sebagai nama dari Custom Event yang akan kita buat, yang mana nantinya akan kita gunakan sebagai dasar ketika ada perubahan pada variabel todos, seperti perpindahan todo, menambah todo, maupun menghapus todo. 
+Kemudian RENDER_EVENT, variabel konstan ini bertujuan sebagai nama dari Custom Event yang 
+akan kita buat, yang mana nantinya akan kita gunakan sebagai dasar ketika ada perubahan pada 
+variabel todos, seperti perpindahan todo, menambah todo, maupun menghapus todo. 
 */
 
 document.addEventListener(RENDER_EVENT, function () {
@@ -11,7 +13,9 @@ document.addEventListener(RENDER_EVENT, function () {
   uncompletedTODOList.innerHTML = "";
 
   /*
-  Agar tidak terjadi duplikasi oleh item yang ada di tampilan ketika memperbarui data todo yang ditampilkan, maka hapus terlebih dahulu elemen sebelumnya (yang sudah ditampilkan) dengan perintah innerHTML = “”.
+  Agar tidak terjadi duplikasi oleh item yang ada di tampilan ketika memperbarui data todo
+  yang ditampilkan, maka hapus terlebih dahulu elemen sebelumnya (yang sudah ditampilkan) 
+  dengan perintah innerHTML = “”.
   */
   const completedTODOList = document.getElementById("completed-todos");
   completedTODOList.innerHTML = "";
@@ -41,13 +45,21 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 /*
-Kode document.addEventListener("DOMContentLoaded", function () .. )  berfungsi sebagai listener yang akan menjalankan kode di dalamnya jika DOM sudah di-load dengan baik.
+Kode document.addEventListener("DOMContentLoaded", function () .. )  berfungsi sebagai 
+listener yang akan menjalankan kode di dalamnya jika DOM sudah di-load dengan baik.
 
-Lalu kode document.getElementById("form"); berfungsi untuk mengambil element dengan id “form” yang berada pada berkas html. Setelah didapatkan, element tersebut kita masukkan ke dalam variable submitForm.
+Lalu kode document.getElementById("form"); berfungsi untuk mengambil element dengan id 
+“form” yang berada pada berkas html. Setelah didapatkan, element tersebut kita masukkan 
+ke dalam variable submitForm.
 
-Lalu, variable submitForm kita berikan listener ketika tombol submit diklik. Ketika tombol submit diklik, maka kode event.preventDefault(); akan dijalankan. Kode ini berfungsi untuk mencegah behaviour asli agar tidak dijalankan. Karena secara default jika tombol submit diklik, browser akan mengirimkan data ke url yang tertera pada properti action dan browser akan di-refresh.
+Lalu, variable submitForm kita berikan listener ketika tombol submit diklik. Ketika tombol 
+submit diklik, maka kode event.preventDefault(); akan dijalankan. Kode ini berfungsi untuk 
+mencegah behaviour asli agar tidak dijalankan. Karena secara default jika tombol submit 
+diklik, browser akan mengirimkan data ke url yang tertera pada properti action dan browser akan di-refresh.
 
-Lalu, kode pemanggilan fungsi addTodo(); bertujuan untuk menjalankan kode yang akan menambahkan todo ke dalam todo list. Namun, saat ini kita tidak akan menambahkan todo ke dalam todo list, melainkan hanya menampilkannya pada console di browser. 
+Lalu, kode pemanggilan fungsi addTodo(); bertujuan untuk menjalankan kode yang akan 
+menambahkan todo ke dalam todo list. Namun, saat ini kita tidak akan menambahkan todo ke 
+dalam todo list, melainkan hanya menampilkannya pada console di browser. 
 */
 
 function addTodo() {
@@ -68,11 +80,18 @@ function addTodo() {
 }
 
 /*
-Kode document.getElementById("title").value berfungsi untuk mengambil elemen pada html, dalam kasus ini kita mengambil element <input> dengan id title. Setelah element didapatkan, value di dalam form tersebut akan kita ambil dan dimasukkan ke dalam variabel textTodo. Logika yang sama juga terjadi pada variabel timestamp.
+Kode document.getElementById("title").value berfungsi untuk mengambil elemen pada html,
+ dalam kasus ini kita mengambil element <input> dengan id title. Setelah element didapatkan, 
+ value di dalam form tersebut akan kita ambil dan dimasukkan ke dalam variabel textTodo. 
+ Logika yang sama juga terjadi pada variabel timestamp.
 
-Setelah nilai dari variabel textTodo dan timestamp didapatkan, kita akan membuat sebuah object dari todo dengan generateTodoObject(). Kemudian, nilai dari object todo tersebut disimpan pada array todos dengan menggunakan metode push().
+Setelah nilai dari variabel textTodo dan timestamp didapatkan, kita akan membuat sebuah 
+object dari todo dengan generateTodoObject(). Kemudian, nilai dari object todo tersebut 
+disimpan pada array todos dengan menggunakan metode push().
 
-Setelah disimpan pada array, kita panggil sebuah custom event RENDER_EVENT dengan dispatchEvent(), yang nantinya akan coba kita implementasi untuk me-render data yang telah disimpan pada array todos.
+Setelah disimpan pada array, kita panggil sebuah custom event RENDER_EVENT dengan 
+dispatchEvent(), yang nantinya akan coba kita implementasi untuk me-render data yang 
+telah disimpan pada array todos.
 
 */
 
@@ -90,7 +109,9 @@ function generateTodoObject(id, task, timestamp, isCompleted) {
 }
 
 /*
-Fungsi generateTodoObject() ini berfungsi untuk membuat sebuah object di JavaScript dari data yang sudah disediakan dari inputan, seperti ID, nama todo (task), waktu (timestamp), dan isCompleted (penanda todo apakah sudah selesai atau belum).
+Fungsi generateTodoObject() ini berfungsi untuk membuat sebuah object di JavaScript 
+dari data yang sudah disediakan dari inputan, seperti ID, nama todo (task), waktu (timestamp), 
+dan isCompleted (penanda todo apakah sudah selesai atau belum).
 */
 
 function makeTodo(todoObject) {
@@ -131,11 +152,19 @@ function makeTodo(todoObject) {
     });
 
     /* 
-    Untuk beberapa implementasi kode seperti createElement, classList.add(), dan append() sudah kita bahas sebelumnya. Intinya, beberapa kode tersebut membuat sebuah button dengan mengimplementasikan class check-button. Class tersebut adalah sebuah selector CSS yang terdapat beberapa konfigurasi style di dalamnya.
+    Untuk beberapa implementasi kode seperti createElement, classList.add(), dan append() 
+    sudah kita bahas sebelumnya. Intinya, beberapa kode tersebut membuat sebuah button 
+    dengan mengimplementasikan class check-button. Class tersebut adalah sebuah selector 
+    CSS yang terdapat beberapa konfigurasi style di dalamnya.
 
-    Kemudian, agar tombol tersebut bisa diinteraksikan, maka kita perlu menerapkan event listener “click”, dengan fungsi yang memanggil fungsi lain sesuai dengan konteks dari tombol tersebut. Misalnya, pada tombol ini (checkButton) memanggil addTaskToCompleted, yang mana akan memindahkan todo dari rak “Yang harus dibaca” ke rak “Selesai Dibaca”.
+    Kemudian, agar tombol tersebut bisa diinteraksikan, maka kita perlu menerapkan event 
+    listener “click”, dengan fungsi yang memanggil fungsi lain sesuai dengan konteks dari 
+    tombol tersebut. Misalnya, pada tombol ini (checkButton) memanggil addTaskToCompleted, 
+    yang mana akan memindahkan todo dari rak “Yang harus dibaca” ke rak “Selesai Dibaca”.
 
-    Tombol lain, seperti undoButton & trashButton, juga menerapkan hal yang sama, di mana memanggil fungsi undoTaskFromCompleted dan removeTaskFromCompleted. Yang mana masing - masing akan memindahkan todo dari selesai ke belum selesai, dan menghapus todo.
+    Tombol lain, seperti undoButton & trashButton, juga menerapkan hal yang sama, di mana 
+    memanggil fungsi undoTaskFromCompleted dan removeTaskFromCompleted. Yang mana masing - 
+    masing akan memindahkan todo dari selesai ke belum selesai, dan menghapus todo.
     */
 
     container.append(checkButton);
@@ -169,7 +198,10 @@ function addTaskToComplete(todoId) {
 }
 
 /*
-  Seperti yang sudah dijelaskan sebelumnya, fungsi ini digunakan untuk memindahkan todo dari rak “Yang harus dilakukan” ke “Yang sudah dilakukan”. Prinsipnya adalah merubah state isCompleted dari sebelumnya false ke true, kemudian panggil event RENDER_EVENT untuk memperbarui data yang ditampilkan.
+  Seperti yang sudah dijelaskan sebelumnya, fungsi ini digunakan untuk memindahkan todo 
+  dari rak “Yang harus dilakukan” ke “Yang sudah dilakukan”. Prinsipnya adalah merubah 
+  state isCompleted dari sebelumnya false ke true, kemudian panggil event RENDER_EVENT 
+  untuk memperbarui data yang ditampilkan.
   */
 
 function findTodo(todoId) {
@@ -182,7 +214,8 @@ function findTodo(todoId) {
 }
 
 /*
-  Kemudian, fungsi ini memanggil fungsi baru, yaitu findTodo, yang mana berfungsi untuk mencari todo dengan ID yang sesuai pada array todos. Agar tidak terjadi error (undefined)
+  Kemudian, fungsi ini memanggil fungsi baru, yaitu findTodo, yang mana berfungsi untuk 
+  mencari todo dengan ID yang sesuai pada array todos. Agar tidak terjadi error (undefined)
   */
 
 
@@ -199,7 +232,9 @@ function findTodoIndex(todoId) {
 
 
 /*
- fungsi ini akan menghapus Todo berdasarkan index yang didapatkan dari pencarian Todo dengan menggunakan findTodoIndex(). Apabila pencarian berhasil, maka akan menghapus todo tersebut menggunakan fungsi slice() yang disediakan oleh JavaScript.
+ fungsi ini akan menghapus Todo berdasarkan index yang didapatkan dari pencarian Todo 
+ dengan menggunakan findTodoIndex(). Apabila pencarian berhasil, maka akan 
+ menghapus todo tersebut menggunakan fungsi slice() yang disediakan oleh JavaScript.
 */
 function removeTaskFromComplete(todoId) {
   const todoTarget = findTodo(todoId);
@@ -211,7 +246,9 @@ function removeTaskFromComplete(todoId) {
 }
 
 /*
-Fungsi ini sebenarnya mirip dengan addTaskToCompleted, namun perbedaannya adalah pada state isCompleted yang diubah nilainya ke false, hal ini bertujuan agar todo task yang sebelumnya completed (selesai), bisa dipindah menjadi incomplete (belum selesai).
+Fungsi ini sebenarnya mirip dengan addTaskToCompleted, namun perbedaannya adalah 
+pada state isCompleted yang diubah nilainya ke false, hal ini bertujuan agar todo 
+task yang sebelumnya completed (selesai), bisa dipindah menjadi incomplete (belum selesai).
 */
 function undoTaskFromComplete(todoId) {
   const todoTarget = findTodo(todoId);
